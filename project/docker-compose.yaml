@@ -1,0 +1,30 @@
+version: 3.8
+
+services:
+  elasticsearch:
+    image: elasticsearch:8.10.0
+    container_name: elasticsearch
+    environment:
+      - "discovery.type=single-node"
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    
+  streamlit:
+    image: python:3.9 
+    container_name: my_streamlit_app
+    working_dir: /  
+    ports:
+      - "8501:8501"  
+    command: sh -c "pip install -r requirements.txt && streamlit run app.py"  
+    depends_on:
+      - elasticsearch
+    environment:
+      OPENAI_API_KEY: <INSERT GROQ KEY HERE>
+
+volumes:
+  esdata:
+    driver: local
