@@ -67,7 +67,7 @@ Through previous testing, I found that the Gemma models have far better and more
   - Utilized Gemma2-9b model for LLM-as-a-judge evaluation technique.
 
 ### Cosine Similarity graph comparison:
-![alt text](image.png)
+![alt text](project/image.png)
 
 ### LLM-as-a-judge metrics:
 #### For Llama3 8b:
