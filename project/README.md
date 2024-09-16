@@ -33,14 +33,13 @@ The solution is a RAG system that uses vector search and the Llama3-70B model to
 
 ### OR
 
-Use `docker-compose` to start the application in one go, then navigate to [http://localhost:8501](http://localhost:8501) to use the application.
-  - If you get a timeout from HuggingFace, restart the Streamlit application.
-  - Before you use this, make sure to modify the `docker-compose.yaml` file accordingly.
+Use `docker-compose` to start the application in one go, then navigate to http://localhost:8501 to use the application.
+  - If you get a timeout from huggingface, restart the streamlit application
+  - Before you use this, make sure to modify the docker-compose.yaml file accordingly
 
 ## Evaluations (for code check `evaluation.ipynb`)
 
-### Search Evaluations
-
+Search Evaluations:
 I used MRR and Hit Rate evaluations to check the retrieval accuracy.
 
 - For Text search: 
@@ -61,10 +60,38 @@ I used MRR and Hit Rate evaluations to check the retrieval accuracy.
 
 Through previous testing, I found that the Gemma models have far better and more predictable behavior compared to the llama models (even the 70B model), but the llama models tend to be more user-friendly and suited for the final LLM response.
 
+## RAG Evaluation:
+
+### Methodology:
+  - Randomly sampled 1000 queries(primarily due to hardware and rate limitations) from the ground truth dataset and compared llm responses against original responses with cosine-similarity.
+  - Utilized Gemma2-9b model for LLM-as-a-judge evaluation technique.
+
+### Cosine Similarity graph comparison:
+![alt text](image.png)
+
+### LLM-as-a-judge metrics:
+#### For Llama3 8b:
+    ```
+    count            1000
+    unique             15
+    top       RELEVANT \n
+    freq              769
+    Name: relevance, dtype: object
+    ```
+
+
+#### For Llama3 70b:
+    ```
+    count            1000
+    unique             10
+    top       RELEVANT \n
+    freq              845
+    Name: relevance, dtype: object
+    ```
+
+### Observations: 
+Llama3 70b has higher accuracy than Llama3 8b however, inference time for 70b is higher than 8b, but in practice it is not very noticeable.
+
 ## Dataset Used
 
 [Research Papers Multi-Label Dataset](https://huggingface.co/datasets/rubrix/research_papers_multi-label) – Note: Only 1000 out of the 21000 rows were actually indexed due to hardware limitations on my local computer.
-
-## References
-
-[Data-talks LLM-Zoomcamp Github](https://github.com/DataTalksClub/llm-zoomcamp.git) - Utlized methodology that was discussed in this course
