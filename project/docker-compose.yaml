@@ -1,9 +1,7 @@
-version: 3.8
-
 services:
   elasticsearch:
-    image: elasticsearch:8.10.0
-    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
+    container_name: elasticsearch2
     environment:
       - "discovery.type=single-node"
       - xpack.security.enabled=false
@@ -14,16 +12,16 @@ services:
       - esdata:/usr/share/elasticsearch/data
     
   streamlit:
-    image: python:3.9 
+    image: python:3.10.0 
     container_name: my_streamlit_app
-    working_dir: /  
+    working_dir: /app
+    volumes:
+      - <INSERT FULL WORKING DIR HERE>:/app
     ports:
       - "8501:8501"  
-    command: sh -c "pip install -r requirements.txt && streamlit run app.py"  
+    command: sh -c "pip install --upgrade -r requirements.txt && python index.py && streamlit run main.py"  
     depends_on:
       - elasticsearch
-    environment:
-      OPENAI_API_KEY: <INSERT GROQ KEY HERE>
 
 volumes:
   esdata:

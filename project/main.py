@@ -8,10 +8,10 @@ model = SentenceTransformer('multi-qa-MiniLM-L6-cos-v1')
 
 client = OpenAI(
     base_url='https://api.groq.com/openai/v1',
-    api_key='<insert API key here>'
+    api_key='<INSERT GROQ KEY HERE>'
 )
 
-es_client = Elasticsearch('http://localhost:9200')
+es_client = Elasticsearch('http://elasticsearch:9200')
 
 def main():
     st.title('Academic Paper RAG')
@@ -58,7 +58,7 @@ def rag(query):
     prompt = prompt_builder(query, result_docs)
     return llm(prompt)
 
-def elastic_search(query, index='academic_papers_v'):
+def elastic_search(query, index='academic_papers'):
     v_q = model.encode(query)
     
     search_query = {

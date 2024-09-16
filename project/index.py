@@ -3,14 +3,16 @@ from datasets import load_dataset
 from sentence_transformers import SentenceTransformer
 from tqdm.auto import tqdm
 
-es_client = Elasticsearch('http://localhost:9200')
+es_client = Elasticsearch('http://elasticsearch:9200')
 ds = load_dataset("rubrix/research_papers_multi-label", split='train', streaming=True)
 ds_head = ds.take(1000)
 papers=list(ds_head)
 model = SentenceTransformer('multi-qa-MiniLM-L6-cos-v1')
 
+print('Loaded Dataset...')
+print('Starting Tokenization...')
 
-for paper in papers:
+for paper in tqdm(papers):
   title = paper['inputs']['title']
   abstract = paper['inputs']['abstract']
   paper['v_t'] = model.encode(title)
@@ -61,5 +63,9 @@ index_name = 'academic_papers'
 es_client.indices.delete(index=index_name, ignore_unavailable=True)
 es_client.indices.create(index=index_name, body=index_settings)
 
+print('Index created...')
+
 for paper in tqdm(papers):
     es_client.index(index=index_name, document=paper)
+
+print('Indexing Finished')
