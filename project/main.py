@@ -8,7 +8,7 @@ model = SentenceTransformer('multi-qa-MiniLM-L6-cos-v1')
 
 client = OpenAI(
     base_url='https://api.groq.com/openai/v1',
-    api_key='<INSERT GROQ KEY HERE>'
+    api_key='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'
 )
 
 es_client = Elasticsearch('http://elasticsearch:9200')
