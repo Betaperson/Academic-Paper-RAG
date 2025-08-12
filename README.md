@@ -25,7 +25,8 @@ The solution is a RAG system that uses vector search and the Llama3-70B model to
         -p 9300:9300 \
         -e "discovery.type=single-node" \
         -e "xpack.security.enabled=false" \
-        docker.elastic.co/elasticsearch/elasticsearch:8.4.3
+        -e "ES_JAVA_OPTS=-Xms512m -Xmx512m" \
+        docker.elastic.co/elasticsearch/elasticsearch:8.15.1
     ```
 3. Index the data by running `index.py`.
 4. Run `streamlit run project/main.py`.
