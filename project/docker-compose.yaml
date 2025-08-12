@@ -1,39 +1,27 @@
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
     container_name: elasticsearch2
     environment:
       - "discovery.type=single-node"
-      - "xpack.security.enabled=false"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
     ports:
       - "9200:9200"
       - "9300:9300"
     volumes:
       - esdata:/usr/share/elasticsearch/data
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
     
   streamlit:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: python:3.10.0 
     container_name: my_streamlit_app
     working_dir: /app
     volumes:
-      - .:/app
+      - <INSERT FULL WORKING DIR HERE>:/app
     ports:
-      - "8501:8501"
-    environment:
-      - PYTHONUNBUFFERED=1
+      - "8501:8501"  
+    command: sh -c "pip install --upgrade -r requirements.txt && python index.py && streamlit run main.py"  
     depends_on:
-      elasticsearch:
-        condition: service_healthy
-    restart: unless-stopped
+      - elasticsearch
 
 volumes:
   esdata:

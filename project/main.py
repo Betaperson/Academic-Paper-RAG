@@ -2,16 +2,13 @@ import streamlit as st
 from openai import OpenAI
 from sentence_transformers import SentenceTransformer
 from elasticsearch import Elasticsearch
-from dotenv import load_dotenv
-import os
 
 model = SentenceTransformer('multi-qa-MiniLM-L6-cos-v1')
 
-load_dotenv()
 
 client = OpenAI(
     base_url='https://api.groq.com/openai/v1',
-    api_key=os.getenv("GROQ_API_KEY")
+    api_key='<INSERT GROQ KEY HERE>'
 )
 
 es_client = Elasticsearch('http://elasticsearch:9200')

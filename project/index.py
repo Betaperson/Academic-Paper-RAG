@@ -4,18 +4,6 @@ from sentence_transformers import SentenceTransformer
 from tqdm.auto import tqdm
 
 es_client = Elasticsearch('http://elasticsearch:9200')
-
-CACHE_FILE = 'processed_papers.pkl'
-INDEX_NAME = 'academic_papers'
-
-index_exists = es_client.indices.exists(index=INDEX_NAME)
-if index_exists:
-    count_response = es_client.count(index=INDEX_NAME)
-    doc_count = count_response['count']
-    if doc_count > 0:
-        print(f'Index {INDEX_NAME} already exists with {doc_count}')
-        exit()
-
 ds = load_dataset("rubrix/research_papers_multi-label", split='train', streaming=True)
 ds_head = ds.take(1000)
 papers=list(ds_head)
@@ -70,11 +58,14 @@ index_settings = {
     }
 }
 
-if not index_exists:
-    es_client.indices.create(index=INDEX_NAME, body=index_settings)
-    print('Index created...')
+index_name = 'academic_papers'
+
+es_client.indices.delete(index=index_name, ignore_unavailable=True)
+es_client.indices.create(index=index_name, body=index_settings)
+
+print('Index created...')
 
 for paper in tqdm(papers):
-    es_client.index(index=INDEX_NAME, document=paper)
+    es_client.index(index=index_name, document=paper)
 
 print('Indexing Finished')
